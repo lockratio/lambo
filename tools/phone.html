@@ -1,0 +1,19 @@
+<!doctype html>
+<!-- Dev harness: the app inside a phone-sized iframe.
+     tools/phone.html?s=844x390,390x760&q=mobile=1   (q = extra query for the app) -->
+<meta charset="utf-8">
+<title>phone harness</title>
+<style>
+  body{margin:0;background:#ddd;display:flex;gap:24px;align-items:flex-start;padding:16px;font:12px system-ui}
+  .dev{background:#111;border-radius:22px;padding:10px;box-shadow:0 20px 60px rgba(0,0,0,.35)}
+  iframe{display:block;border:0;background:#fff;border-radius:14px}
+  .cap{color:#555;margin-top:6px;text-align:center}
+</style>
+<body>
+<script>
+  const p = new URLSearchParams(location.search);
+  const q = p.get('q') || 'mobile=1', q2 = 'tick=1&' + q;
+  const sizes = (p.get('s') || `${p.get('w') || 844}x${p.get('h') || 390}`).split(',').map(t => t.split('x').map(Number));
+  document.body.innerHTML = sizes.map(([w, h], i) => `<div><div class="dev"><iframe id="f${i}" width="${w}" height="${h}" src="../?${q2}"></iframe></div><div class="cap">${w} × ${h}</div></div>`).join('');
+</script>
+</body>

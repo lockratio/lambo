@@ -1,0 +1,19 @@
+{
+  "name": "lambo-tools",
+  "version": "1.0.0",
+  "description": "Build tooling for the Aventador slots site (model conversion, vendored libs)",
+  "scripts": {
+    "build:model": "bash build_model.sh"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "dependencies": {
+    "@gltf-transform/cli": "^4.5.0",
+    "meshoptimizer": "^1.2.0",
+    "three": "^0.186.0",
+    "three-mesh-bvh": "^0.9.15"
+  },
+  "private": true
+}

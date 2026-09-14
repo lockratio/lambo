@@ -1,0 +1,165 @@
+{
+ "_note": "Fictional advertisers for the preview build. Anchors are in car space (nose +X, up +Y, driver side +Z, metres). The slot worker snaps each anchor to the nearest slot in `zone` and grows a patch of `radius` metres; `shape` picks the sticker die-cut (rect | pill | badge).",
+ "campaigns": [
+  {
+   "id": "meridian",
+   "name": "Meridian Freight",
+   "tag": "Moves everything",
+   "colour": "#0f4c81",
+   "mark": "chevron",
+   "url": "https://example.com/meridian",
+   "zone": "bonnet",
+   "anchor": [
+    1.05,
+    0.72,
+    0.0
+   ],
+   "radius": 0.4,
+   "shape": "rect"
+  },
+  {
+   "id": "halcyon",
+   "name": "Halcyon Labs",
+   "tag": "Quietly ahead",
+   "colour": "#ffffff",
+   "mark": "ring",
+   "url": "https://example.com/halcyon",
+   "zone": "door_r",
+   "anchor": [
+    0.12,
+    0.62,
+    0.98
+   ],
+   "radius": 0.34,
+   "shape": "pill"
+  },
+  {
+   "id": "northbound",
+   "name": "Northbound Coffee",
+   "tag": "Roasted in Hobart",
+   "colour": "#7a3b1e",
+   "mark": "wave",
+   "url": "https://example.com/northbound",
+   "zone": "door_l",
+   "anchor": [
+    0.12,
+    0.62,
+    -0.98
+   ],
+   "radius": 0.3,
+   "shape": "badge"
+  },
+  {
+   "id": "vantage",
+   "name": "Vantage Air",
+   "tag": "Fly lighter",
+   "colour": "#1ea7c9",
+   "mark": "diamond",
+   "url": "https://example.com/vantage",
+   "zone": "rh_r",
+   "anchor": [
+    -1.05,
+    0.72,
+    0.98
+   ],
+   "radius": 0.36,
+   "shape": "rect"
+  },
+  {
+   "id": "fathom",
+   "name": "Fathom Marine",
+   "tag": "Built for the swell",
+   "colour": "#0b3d3a",
+   "mark": "wave",
+   "url": "https://example.com/fathom",
+   "zone": "wing",
+   "anchor": [
+    -2.2,
+    1.05,
+    0.3
+   ],
+   "radius": 0.36,
+   "shape": "pill"
+  },
+  {
+   "id": "tessellate",
+   "name": "Tessellate",
+   "tag": "Design systems",
+   "colour": "#e8483c",
+   "mark": "square",
+   "url": "https://example.com/tessellate",
+   "zone": "engine_cover",
+   "anchor": [
+    -1.35,
+    0.95,
+    -0.28
+   ],
+   "radius": 0.38,
+   "shape": "rect"
+  },
+  {
+   "id": "solvent",
+   "name": "Solvent Studio",
+   "tag": "Brand, motion, film",
+   "colour": "#f4b400",
+   "mark": "dot",
+   "url": "https://example.com/solvent",
+   "zone": "nose",
+   "anchor": [
+    2.3,
+    0.46,
+    0.38
+   ],
+   "radius": 0.24,
+   "shape": "badge"
+  },
+  {
+   "id": "pikerowe",
+   "name": "Pike & Rowe",
+   "tag": "Tailors since 1987",
+   "colour": "#7E37FF",
+   "mark": "ring",
+   "url": "https://example.com/pikerowe",
+   "zone": "roof",
+   "anchor": [
+    -0.48,
+    1.06,
+    0.3
+   ],
+   "radius": 0.3,
+   "shape": "rect"
+  },
+  {
+   "id": "caldera",
+   "name": "Caldera Energy",
+   "tag": "Heat that works",
+   "colour": "#d1451b",
+   "mark": "chevron",
+   "url": "https://example.com/caldera",
+   "zone": "fq_r",
+   "anchor": [
+    1.3,
+    0.62,
+    0.92
+   ],
+   "radius": 0.36,
+   "shape": "pill"
+  },
+  {
+   "id": "beacon",
+   "name": "Beacon Fibre",
+   "tag": "Gigabit, everywhere",
+   "colour": "#1955FF",
+   "mark": "ring",
+   "url": "https://example.com/beacon",
+   "zone": "rh_r",
+   "anchor": [
+    -1.75,
+    0.95,
+    0.7
+   ],
+   "radius": 0.28,
+   "shape": "badge"
+  }
+ ]
+}

@@ -1,0 +1,314 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, interactive-widget=resizes-content" />
+<title>Be on this Lambo · Aventador advertising slots · Lock Ratio</title>
+<meta name="description" content="One white Lamborghini Aventador SV Roadster, ~1,000 advertising slots priced by visibility. Orbit the car, paint the panel you want, see the price, reserve it." />
+<meta name="theme-color" content="#f6f7f9" />
+<meta property="og:title" content="Be on this Lambo" />
+<meta property="og:description" content="Advertising slots on a Lamborghini Aventador, priced by visibility. Paint the panel you want." />
+<meta property="og:type" content="website" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="mobile-web-app-capable" content="yes" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%231955FF'/%3E%3Cpath d='M14 40 L30 22 L50 22 L42 34 L26 34 L20 42 Z' fill='%23fff'/%3E%3C/svg%3E" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&family=Roboto+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="./styles/main.css">
+<link rel="modulepreload" href="./vendor/three/three.module.js">
+<link rel="modulepreload" href="./vendor/three/three.core.js">
+<link rel="preload" href="./assets/models/car.glb" as="fetch" crossorigin>
+
+<!-- Everything is vendored: the page works offline and on GitHub Pages with no build step. -->
+<script type="importmap">
+{"imports":{
+  "three":"./vendor/three/three.module.js",
+  "three/addons/":"./vendor/three/addons/",
+  "three-mesh-bvh":"./vendor/three-mesh-bvh/index.module.js"
+}}
+</script>
+</head>
+<body data-view="showroom">
+
+<canvas id="view" aria-label="3D model of the car. Drag to orbit, right-drag to move, click a panel to select advertising slots."></canvas>
+
+<div class="hud">
+
+  <!-- ── top bar ─────────────────────────────────────────── -->
+  <header id="topbar">
+    <a id="logo" href="#/" title="Reset the view" aria-label="Lock Ratio — reset the view">
+      <img src="./assets/brand/lockratio-black.png" alt="Lock Ratio" width="720" height="65" decoding="async">
+    </a>
+    <nav id="nav" aria-label="Sections">
+      <a href="#/" data-page="car" class="on">The car</a>
+      <a href="#/how" data-page="how">How it works</a>
+      <a href="#/pricing" data-page="pricing">Pricing</a>
+      <a href="#/advertisers" data-page="advertisers">Advertisers</a>
+      <a href="#/faq" data-page="faq">FAQ</a>
+      <a href="#/contact" data-page="contact">Contact</a>
+    </nav>
+    <div class="tbr">
+      <div id="viewToggle" class="seg" role="group" aria-label="View">
+        <button id="vShowroom" aria-pressed="true">Showroom</button>
+        <button id="vMarket" aria-pressed="false">Market</button>
+      </div>
+      <button id="menuBtn" class="icon" aria-label="Open menu" aria-expanded="false" aria-controls="drawer">
+        <svg viewBox="0 0 20 20" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 6h14M3 10h14M3 14h14"/></svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── floating header ─────────────────────────────────── -->
+  <div id="hero" aria-live="off">
+    <h1>Be on this <span>Lambo</span>.</h1>
+    <p class="lede">Every panel is advertising space. Paint the part you want, see the price, reserve it.</p>
+    <div class="blocks">
+      <span class="blk" style="--i:0"><b id="heroSlots" class="num">—</b> slots</span>
+      <span class="blk" style="--i:1">from <b id="heroFrom" class="num">—</b></span>
+      <span class="blk" style="--i:2">priced by <b>visibility</b></span>
+      <span class="blk" style="--i:3"><b id="heroPct" class="num">—</b> sold</span>
+    </div>
+  </div>
+
+  <!-- ── funding · top-right ─────────────────────────────── -->
+  <section id="funding" class="panel" aria-label="Funding progress">
+    <div class="row"><span class="eyebrow">Sold so far</span><span class="eyebrow" id="fundEyebrow">of $1.1M AUD</span></div>
+    <div class="raised num" id="fundRaised">—</div>
+    <div class="track"><div class="fill" id="fundFill"></div></div>
+    <div class="foot"><b id="fundSold">—</b> of <b id="fundTotal">—</b> slots · <b id="fundBrands">—</b> advertisers · <b id="fundPct">—</b></div>
+  </section>
+
+  <!-- ── panel rail · right ──────────────────────────────── -->
+  <section id="zones" class="panel" aria-label="Jump to a panel">
+    <span class="eyebrow">Panels</span>
+    <div id="zoneList"></div>
+  </section>
+
+  <!-- mobile zone chips -->
+  <div id="zoneChips" aria-label="Select a panel"></div>
+
+  <!-- ── view controls · left ────────────────────────────── -->
+  <div id="viewctl" class="panel" role="toolbar" aria-label="Camera">
+    <button class="vc" data-preset="hero" title="Reset view (R)" aria-label="Reset view">
+      <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10a6 6 0 1 0 1.8-4.3"/><path d="M4 3v3.5h3.5"/></svg>
+    </button>
+    <button class="vc" data-preset="front" title="Front (1)" aria-label="Front view"><span class="t">F</span></button>
+    <button class="vc" data-preset="side" title="Side (2)" aria-label="Side view"><span class="t">S</span></button>
+    <button class="vc" data-preset="rear" title="Rear (3)" aria-label="Rear view"><span class="t">R</span></button>
+    <button class="vc" data-preset="top" title="Top (4)" aria-label="Top view"><span class="t">T</span></button>
+    <i class="sep"></i>
+    <button class="vc" id="zoomIn" title="Zoom in (+)" aria-label="Zoom in">
+      <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M10 5v10M5 10h10"/></svg>
+    </button>
+    <button class="vc" id="zoomOut" title="Zoom out (−)" aria-label="Zoom out">
+      <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M5 10h10"/></svg>
+    </button>
+    <i class="sep"></i>
+    <button class="vc" id="panBtn" title="Move the car sideways (hold Shift, or right-drag)" aria-label="Move tool" aria-pressed="false">
+      <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M10 3v14M3 10h14"/><path d="m7 6 3-3 3 3M7 14l3 3 3-3M6 7l-3 3 3 3M14 7l3 3-3 3"/></svg>
+    </button>
+    <button class="vc" id="spinBtn" title="Auto-rotate" aria-label="Auto-rotate" aria-pressed="false">
+      <svg viewBox="0 0 20 20" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 10a6 6 0 1 1-1.8-4.3"/><path d="M16 3v3.5h-3.5"/></svg>
+    </button>
+  </div>
+
+  <!-- ── dock · bottom-centre ────────────────────────────── -->
+  <section id="dock" class="panel" aria-label="Tools">
+    <div class="group">
+      <span class="eyebrow">Mode</span>
+      <div class="modes seg" role="group">
+        <button id="mLook" aria-pressed="true">Look</button>
+        <button id="mSelect" aria-pressed="false">Select</button>
+      </div>
+    </div>
+    <div class="group" id="brushGroup">
+      <span class="eyebrow">Brush</span>
+      <div id="brushRow">
+        <button id="brushDown" class="step" aria-label="Smaller brush">−</button>
+        <input id="brushSlider" type="range" min="0" max="100" value="0" aria-label="Brush size">
+        <button id="brushUp" class="step" aria-label="Larger brush">+</button>
+        <span id="brushVal" class="num">1 slot</span>
+      </div>
+    </div>
+    <div class="group" id="legendGroup">
+      <span class="eyebrow">Slot price</span>
+      <div id="legendBar"></div>
+      <div id="legendScale"><span id="legMin" class="num">—</span><span id="legMax" class="num">—</span></div>
+    </div>
+    <div class="group icons">
+      <button id="undoBtn" class="icon" title="Undo (Ctrl+Z)" aria-label="Undo" disabled>
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7 5 3 9l4 4"/><path d="M3 9h8.5a4.5 4.5 0 1 1 0 9H9"/></svg>
+      </button>
+      <button id="tableBtn" class="icon" title="All slots and prices" aria-label="All slots and prices">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M3 5h14M3 10h14M3 15h14"/></svg>
+      </button>
+      <button id="shareBtn" class="icon" title="Copy a link to this view" aria-label="Share this view">
+        <svg viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 12 12 8"/><path d="M9.5 6.5 11 5a3 3 0 0 1 4 4l-1.5 1.5"/><path d="M10.5 13.5 9 15a3 3 0 0 1-4-4l1.5-1.5"/></svg>
+      </button>
+      <button id="sfxBtn" class="icon" title="Interface sounds" aria-label="Interface sounds" aria-pressed="true">
+        <svg class="on" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8v4h3l4 3V5L6 8H3z"/><path d="M13 7.5a3.5 3.5 0 0 1 0 5"/><path d="M15.5 5a7 7 0 0 1 0 10"/></svg>
+        <svg class="off" viewBox="0 0 20 20" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8v4h3l4 3V5L6 8H3z"/><path d="m13 8 4 4M17 8l-4 4"/></svg>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── cart · bottom-right ─────────────────────────────── -->
+  <section id="cart" class="panel" aria-label="Your selection">
+    <div id="cartHead">
+      <span class="eyebrow">Your selection</span>
+      <span class="count"><span id="cartCount" class="num">0</span> slots</span>
+    </div>
+    <div class="total num" id="cartTotal">$0</div>
+    <div class="gst" id="cartGst">Nothing selected yet</div>
+    <div id="cartGroups"></div>
+    <div class="actions">
+      <button id="reserve" class="primary" disabled>Reserve</button>
+      <button id="clear">Clear</button>
+    </div>
+    <div class="art">
+      <label class="artBtn" for="artFile" id="artLabel" role="button" tabindex="0" aria-disabled="true">Preview your artwork on it</label>
+      <input id="artFile" type="file" accept="image/png,image/jpeg,image/svg+xml,image/webp" hidden>
+      <button id="artClear" class="artBtn" hidden>Remove artwork</button>
+      <div class="artSpec" id="artSpec"></div>
+    </div>
+  </section>
+
+  <div id="pricing" class="pill" hidden><b>Pricing slots</b><span class="bar"><i></i></span></div>
+  <div id="hint">Drag to orbit · scroll to zoom · <kbd>right-drag</kbd> to move · <kbd>click</kbd> a panel to start selecting</div>
+  <div id="credit">A <a href="https://lockratio.com" target="_blank" rel="noopener">Lock Ratio</a> project · preview build · model © Patricars</div>
+  <div id="toast" class="panel" role="status" aria-live="polite"></div>
+
+  <!-- onboarding: a ghosted hand drags across the car once -->
+  <div id="onboard" aria-hidden="true">
+    <svg class="hand" viewBox="0 0 48 48" width="52" height="52" fill="none" stroke="#1955FF" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M18 30V13a3 3 0 0 1 6 0v11m0-6a3 3 0 0 1 6 0v6m0-3a3 3 0 0 1 6 0v9c0 8-6 12-12 12h-2c-5 0-8-3-12-11l-3-6a3 3 0 0 1 5-3l6 6"/>
+    </svg>
+    <div class="trail"></div>
+    <div class="label">Drag across a panel to paint your slots</div>
+  </div>
+</div>
+
+<!-- ── mobile drawer (upright in any orientation) ───────── -->
+<nav id="drawer" aria-label="Menu" hidden>
+  <div class="dhd">
+    <img src="./assets/brand/lockratio-black.png" alt="Lock Ratio" width="720" height="65">
+    <button id="drawerClose" class="icon" aria-label="Close menu">×</button>
+  </div>
+  <a href="#/" data-page="car" style="--i:0">The car</a>
+  <a href="#/how" data-page="how" style="--i:1">How it works</a>
+  <a href="#/pricing" data-page="pricing" style="--i:2">Pricing</a>
+  <a href="#/advertisers" data-page="advertisers" style="--i:3">Advertisers</a>
+  <a href="#/faq" data-page="faq" style="--i:4">FAQ</a>
+  <a href="#/contact" data-page="contact" style="--i:5">Contact</a>
+  <div class="dft">A Lock Ratio project</div>
+</nav>
+
+<!-- ── rotate-your-phone prompt ─────────────────────────── -->
+<div id="rotate" hidden>
+  <div class="phone"><i></i></div>
+  <h2>Turn your phone sideways</h2>
+  <p>The car is built for a wide screen. Landscape gives you the whole Lambo and room to paint.</p>
+  <button id="rotateFull" class="primary">Go landscape &amp; full screen</button>
+  <button id="rotateSkip">Continue in portrait</button>
+</div>
+
+<!-- ── info pages (hash routed) ─────────────────────────── -->
+<div id="pages" hidden>
+  <div class="pscrim"></div>
+  <div class="pwrap">
+    <button id="pageClose" class="icon" aria-label="Back to the car">
+      <svg viewBox="0 0 20 20" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="m5 5 10 10M15 5 5 15"/></svg>
+    </button>
+
+    <article class="page" data-page="how">
+      <span class="eyebrow r" style="--i:0">How it works</span>
+      <h2 class="r" style="--i:1">One car. A thousand tiny billboards.</h2>
+      <p class="r lead" style="--i:2">The bodywork of a Lamborghini Aventador is divided into ~1,000 slots, each one 12&nbsp;cm square. You buy the slots you want, we print your artwork on cast vinyl, and the car goes out and gets photographed. A lot.</p>
+      <ol class="steps">
+        <li class="r" style="--i:3"><b>01 · Orbit</b><span>Drag the car around. Scroll to zoom, right-drag to move it across the screen.</span></li>
+        <li class="r" style="--i:4"><b>02 · Paint</b><span>Click a panel and drag. The brush dial sets how much you cover; the price updates live.</span></li>
+        <li class="r" style="--i:5"><b>03 · Preview</b><span>Drop your logo onto the selection to see it on the metal, with the print spec the wrap shop needs.</span></li>
+        <li class="r" style="--i:6"><b>04 · Reserve</b><span>Hold your slots for 15 minutes while you sort payment. Slots are sold once, first come first served.</span></li>
+      </ol>
+      <div class="r cta" style="--i:7"><a class="primary" href="#/">Paint a panel</a><a class="ghost" href="#/pricing">See the pricing</a></div>
+    </article>
+
+    <article class="page" data-page="pricing">
+      <span class="eyebrow r" style="--i:0">Pricing</span>
+      <h2 class="r" style="--i:1">You pay for eyes, not paint.</h2>
+      <p class="r lead" style="--i:2">Every slot's price is its area times a visibility multiplier for the panel it sits on, scaled so the whole car totals <b id="priceTarget">$1.1M</b> AUD including GST. Nothing is hand-priced, so the bonnet costs more than the sill because more people will see it.</p>
+      <div class="formula r" style="--i:3"><span>price</span><i>=</i><span>area</span><i>×</i><span>visibility</span><i>×</i><span id="priceRate">$/m²</span></div>
+      <div id="priceGrid" class="pgrid"></div>
+      <div class="r cta" style="--i:9"><button class="primary" id="priceTable">Every panel, every price</button><a class="ghost" href="#/">Back to the car</a></div>
+    </article>
+
+    <article class="page" data-page="advertisers">
+      <span class="eyebrow r" style="--i:0">Advertisers</span>
+      <h2 class="r" style="--i:1">Already on the car.</h2>
+      <p class="r lead" style="--i:2">The stickers you can see on the model are example campaigns for this preview build. Real advertisers get a die-cut vinyl print, a link from the slot, and a spot on this page.</p>
+      <div id="advGrid" class="agrid"></div>
+      <div class="r cta" style="--i:9"><a class="primary" href="#/">Claim your panel</a><a class="ghost" href="#/contact">Talk to us</a></div>
+    </article>
+
+    <article class="page" data-page="faq">
+      <span class="eyebrow r" style="--i:0">FAQ</span>
+      <h2 class="r" style="--i:1">Questions people ask.</h2>
+      <div class="faq">
+        <details class="r" style="--i:2" open><summary>Is this real?</summary><p>The car, the slots and the pricing model are real. This is a preview build: reservations are simulated and no payment is taken yet. The example advertisers are fictional.</p></details>
+        <details class="r" style="--i:3"><summary>How big is a slot?</summary><p>About 12 × 12 cm on the surface. Curved panels are measured on the metal, so a slot on the haunch is the same area as one on the bonnet. Buy a block of slots for a bigger print.</p></details>
+        <details class="r" style="--i:4"><summary>What can I put on it?</summary><p>Logos, wordmarks, campaign art. Artwork is reviewed before printing and must meet Australian advertising standards. No competitor of an existing advertiser can sit inside their patch.</p></details>
+        <details class="r" style="--i:5"><summary>How long does it stay on?</summary><p>Twelve months from the day the wrap goes on. The car is driven, shown and photographed through the year, and every advertiser gets the photo set.</p></details>
+        <details class="r" style="--i:6"><summary>Why can't I select the glass or the wheels?</summary><p>Windscreen coverage is not road legal and wheels are not printable. Only the painted bodywork is for sale, which is why it is white: the slots are the colour.</p></details>
+        <details class="r" style="--i:7"><summary>Can I share my selection?</summary><p>Yes. The share button copies a link that opens this exact view with your slots painted in.</p></details>
+      </div>
+    </article>
+
+    <article class="page" data-page="contact">
+      <span class="eyebrow r" style="--i:0">Contact</span>
+      <h2 class="r" style="--i:1">Want a bigger piece of the car?</h2>
+      <p class="r lead" style="--i:2">Whole-panel and multi-panel packages, agency bookings and press: talk to the team at Lock Ratio.</p>
+      <div class="contact r" style="--i:3">
+        <a class="primary" href="mailto:advertise@lockratio.com">advertise@lockratio.com</a>
+        <a class="ghost" href="https://lockratio.com" target="_blank" rel="noopener">lockratio.com ↗</a>
+      </div>
+      <p class="r fine" style="--i:4">Preview build. Model © Patricars. Lamborghini and Aventador are trademarks of Automobili Lamborghini S.p.A.; this project is not affiliated with or endorsed by them.</p>
+    </article>
+  </div>
+</div>
+
+<!-- cursor tooltip -->
+<div id="tip" role="tooltip">
+  <div class="z"><span class="swatch"></span><span class="zn">—</span></div>
+  <div class="p num">—</div>
+  <div class="s">—</div>
+  <div class="why num">—</div>
+</div>
+
+<!-- all slots, as a table -->
+<dialog id="tableDlg" aria-labelledby="tableTitle">
+  <div class="dhead">
+    <h2 id="tableTitle">Every panel, every price</h2>
+    <button id="tableClose" class="icon" aria-label="Close">×</button>
+  </div>
+  <p class="dsub">A slot's price is its area times a visibility multiplier for the panel it sits on, scaled so the whole car totals the target. Nothing is hand-priced.</p>
+  <div class="tscroll">
+    <table>
+      <thead><tr><th>Panel</th><th>Visibility</th><th>Slots</th><th>Available</th><th>Per slot</th><th>Panel total</th><th></th></tr></thead>
+      <tbody id="tableBody"></tbody>
+    </table>
+  </div>
+  <div class="dfoot" id="tableFoot"></div>
+</dialog>
+
+<!-- loading -->
+<div id="loader" aria-live="polite">
+  <img class="llogo" src="./assets/brand/lockratio-black.png" alt="Lock Ratio" width="720" height="65">
+  <div class="ltitle">Be on this Lambo</div>
+  <div class="bar"><i></i></div>
+  <div class="lrow"><span class="t">Downloading the car</span><span class="pct num">0%</span></div>
+</div>
+
+<script type="module" src="./src/main.js"></script>
+</body>
+</html>
