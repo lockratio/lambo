@@ -1,0 +1,7 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  tests:
+    uses: lockratio/shared_resources/.github/workflows/tests.yml@main
+    with: {repo: lambo, path: lambo/DEV}
+    secrets: inherit

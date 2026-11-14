@@ -14,11 +14,12 @@ Placeholder to confirm before launch: the contact address `advertise@lockratio.c
 
 ## Run
 
-```bash
-python tools/serve.py 8777      # http://127.0.0.1:8777/
+```powershell
+..\..\CORE\.venv\Scripts\python.exe -m sr_local_server_kit serve --root . --port 8777   # http://127.0.0.1:8777/
 ```
 
-(Any static server works; ES modules need HTTP, not `file://`.)
+That is the workspace bank's static server (no-store caching). Any static server works; ES modules need HTTP, not `file://`.
+Tests, promote and the logo copy: see `AGENTS.md`.
 
 ## Layout
 
@@ -27,7 +28,7 @@ python tools/serve.py 8777      # http://127.0.0.1:8777/
 | `index.html` | Page shell: top bar + nav, floating header, HUD, info pages, mobile drawer, rotate prompt. |
 | `styles/main.css` | All styling. Design tokens (Lock Ratio blue `#1955FF`, purple `#7E37FF`, grey `#808080`, yellow `#D1CC00`, Roboto) live in the `:root` block at the top. Mobile layout is switched on by `html.mobile`, with landscape/portrait media queries inside. |
 | `assets/bg/lines.svg` | The faint geometric line pattern behind the room (generated, see `notes/polish-plan.md`). |
-| `assets/brand/` | Lock Ratio logo, trimmed with a transparent background. |
+| `assets/brand/` | Lock Ratio logo, a copy built from the bank's brand kit by `assets/brand/derived.json`. Never edit it by hand. |
 | `src/nav.js` | Hash router for the info pages (`#/how`, `#/pricing`, …), the mobile drawer and the rotate-your-phone prompt. |
 | `src/viewctl.js` | Camera presets (logo = reset to front three-quarter), zoom steps, the Move (pan) tool, auto-rotate, keyboard. |
 | `src/sfx.js` | Synthesised interface ticks (brush detents, presets, slot pops). Mutable; preference persists. |
@@ -57,7 +58,7 @@ cd tools && npm install            # gltf-transform, three (for vendoring), thre
 bash tools/build_model.sh "<path to Lamborghini_Aventador_SV_Roadster>"
 ```
 
-Python deps (`numpy`, `pillow`) live in `.venv`.
+Python deps (`numpy`, `pillow`) come from the workspace environment `CORE\.venv`.
 
 ## Debug flags
 
