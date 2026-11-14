@@ -2,7 +2,7 @@
   "$doc": "Test manifest read by the bank's tools/test_runner.py. Format: the bank's docs/workspace/app-integration.md.",
   "suites": [
     {"name": "js-unit", "tier": "unit", "kind": "node", "args": ["tests/js/*.test.mjs"]},
-    {"name": "py-unit", "tier": "unit", "kind": "pytest", "args": ["tests/unit"]},
+    {"name": "brand", "tier": "unit", "kind": "cmd", "cmd": ["{python}", "-m", "sr_core", "trim_png", "--check", "assets/brand/derived.json"]},
     {"name": "browser", "tier": "e2e", "kind": "pytest", "args": ["tests/e2e"]},
     {"name": "perf", "tier": "perf", "kind": "pytest", "args": ["tests/perf"], "workers": 1}
   ]

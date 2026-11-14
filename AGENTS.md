@@ -33,7 +33,7 @@ A static site: a 3D Lamborghini whose bodywork is sold as advertising slots. Pla
 | HUD, cart, price table | `src/hud.js` |
 | Styling | `styles/main.css` |
 | Rebuild the car model | `tools/build_model.sh` (needs `npm install` in `tools/`) |
-| Tests | `tests/js` (node), `tests/unit`, `tests/e2e`, `tests/perf` |
+| Tests | `tests/js` (node), `tests/e2e`, `tests/perf`; the `brand` suite in `tests.json` checks the logo against the bank |
 
 ## Search the bank first
 

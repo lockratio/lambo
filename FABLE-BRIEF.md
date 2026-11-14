@@ -16,7 +16,6 @@ to replace its placeholder car with the purchased model, then build it out.
 |---|---|
 | `index.html` | **The working draft.** Single self-contained file, ~1,250 lines. Everything below refers to it. |
 | `tools/serve.py` | Dev server. `python tools/serve.py 8777` → http://127.0.0.1:8777/ |
-| `MODEL.md` | Earlier model-swap notes. Partly superseded by this document — where they disagree, follow this one. |
 | `vendor/three/` | **Broken.** See §0.2. |
 | `src/carScene.js` | Unused parallel skeleton. Loads `./assets/models/car.glb`. Not wired to anything. |
 | `src/main.js` | Original stub — writes the text "lambo" into `#app`. Dead. |

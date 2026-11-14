@@ -27,7 +27,7 @@ Tests, promote and the logo copy: see `AGENTS.md`.
 |---|---|
 | `index.html` | Page shell: top bar + nav, floating header, HUD, info pages, mobile drawer, rotate prompt. |
 | `styles/main.css` | All styling. Design tokens (Lock Ratio blue `#1955FF`, purple `#7E37FF`, grey `#808080`, yellow `#D1CC00`, Roboto) live in the `:root` block at the top. Mobile layout is switched on by `html.mobile`, with landscape/portrait media queries inside. |
-| `assets/bg/lines.svg` | The faint geometric line pattern behind the room (generated, see `notes/polish-plan.md`). |
+| `assets/bg/lines.svg` | The faint geometric line pattern behind the room (generated). |
 | `assets/brand/` | Lock Ratio logo, a copy built from the bank's brand kit by `assets/brand/derived.json`. Never edit it by hand. |
 | `src/nav.js` | Hash router for the info pages (`#/how`, `#/pricing`, …), the mobile drawer and the rotate-your-phone prompt. |
 | `src/viewctl.js` | Camera presets (logo = reset to front three-quarter), zoom steps, the Move (pan) tool, auto-rotate, keyboard. |
@@ -77,3 +77,21 @@ Python deps (`numpy`, `pillow`) come from the workspace environment `CORE\.venv`
 ## Not built yet
 
 Backend (inventory, atomic reservations with TTL, payments with GST, artwork review) and the legal items in `FABLE-BRIEF.md` §9 — model licence confirmation, trademark advice, advertising standards.
+
+## Design decisions
+
+The brief: a white, realistic car with a few sticker ads in a white room, Roboto, blue `#1955FF` and purple `#7E37FF`, grey `#808080`, yellow `#D1CC00`, mobile-first landscape.
+
+- **Landing view is the Showroom** (white car + stickers). The price heat map wipes in the first time the visitor enters Select mode or clicks Market — the brief wanted the white car to be the showcase.
+- **Colour list read as swapped**: `#D1CC00` is used as the yellow accent (your selection), `#808080` as the grey for text/dark features.
+- **Environment is a half-float DataTexture**, not a canvas: the softboxes are thin (≈3° tall) and 4–6× brighter than the room, so they draw crisp highlight lines without blowing out the diffuse. First attempt used wide, very bright strips and the bonnet clipped to white at any exposure (measured with `gl.readPixels`: 236/255 at exposure 0.5). Walls run 0.46 → 1.02 floor-to-ceiling so flanks fall off (bonnet ≈ 231, door ≈ 182 in sRGB).
+- **Shadow**: key light orbits with the camera at a fixed offset (`KEY_AZ`), so the cast shadow sweeps across the floor as you turn the car; a ShadowMaterial catcher keeps the floor the same off-white as the page.
+- **Car framing**: `camera.setViewOffset` shifts the projection centre left/down on desktop (right rail + cart, top bar + hero) — the orbit target stays on the car so panning/rotation feel right. On phones the FOV and preset distance change with orientation instead.
+- **Pan**: right-drag, Shift+drag, two-finger drag, or the Move tool; the orbit target is clamped to a box around the car every frame.
+- **Mobile**: portrait shows a rotate prompt with a "Go landscape & full screen" button (`requestFullscreen` + `screen.orientation.lock`, silently skipped where unsupported, e.g. iOS Safari) and a "continue in portrait" escape. The nav drawer is DOM, so it is upright in either orientation. Landscape puts the headline in the bar and gives the car the height.
+- **Sounds**: synthesised WebAudio blips (no files), created lazily on the first gesture, `navigator.vibrate` on phones, toggle in the dock persisted in `localStorage`.
+- **Logo**: the source PNG has real alpha with a dark RGB fill under it; cropped by alpha, 720 px wide. Clicking it resets to the front three-quarter view.
+- Contact address `advertise@lockratio.com` is a placeholder to confirm.
+- `tools/phone.html` is a dev harness (iframe at a phone size) because the automation window could not be resized.
+- The canvas `#view` needs `width:100%;height:100%`. Without it the canvas keeps its drawing-buffer size and overflows the window on a screen with a device pixel ratio above 1, and picking drifts.
+- Not checked on a real touch device: two-finger pan, haptics and the orientation lock were checked only in a desktop browser at phone sizes.
