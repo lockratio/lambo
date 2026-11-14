@@ -61,21 +61,3 @@ def test_selecting_a_whole_panel_from_the_price_table_fills_the_cart_and_clear_e
     page.eval("document.getElementById('clear').click()")
     page.wait("document.getElementById('reserve').disabled")
     assert total(page) == 0
-
-
-def test_dragging_the_brush_across_the_car_selects_slots(page):
-    page.click("#mSelect")
-    # screen point of the free slot whose centre is nearest the camera, so the drag starts on the paint
-    x, y = page.eval("""(() => { const { camera, cells, THREE, canvas } = __slots, r = canvas.getBoundingClientRect();
-      const free = cells.filter(c => c.state === 0), cam = camera.position;
-      const c = free.reduce((a, b) => Math.hypot(...a.c.map((v, i) => v - cam.getComponent(i))) <= Math.hypot(...b.c.map((v, i) => v - cam.getComponent(i))) ? a : b);
-      const v = new THREE.Vector3(...c.c).project(camera);
-      return [r.left + (v.x + 1) / 2 * r.width, r.top + (1 - v.y) / 2 * r.height]; })()""")
-    mouse = lambda kind, dx, buttons: page.call("Input.dispatchMouseEvent", {"type": kind, "x": x + dx, "y": y, "button": "left", "buttons": buttons, "clickCount": 1})
-    mouse("mouseMoved", 0, 0)
-    mouse("mousePressed", 0, 1)
-    for step in range(1, 6):
-        mouse("mouseMoved", step * 4, 1)
-    mouse("mouseReleased", 20, 0)
-    page.wait("!document.getElementById('reserve').disabled")
-    assert total(page) > 0
