@@ -1,0 +1,9 @@
+{
+  "derived": {
+    "lockratio-black.png": {
+      "from": "bank://assets/brand/lockratio/v2/logo-header-on-light.png",
+      "pad": 0,
+      "sha256": "88823ac93a44c9aa5cc08cefeee5ba84ae51cf5cce1689deaeb8650be0f3f398"
+    }
+  }
+}
