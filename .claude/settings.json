@@ -1,0 +1,8 @@
+{
+  "hooks": {
+    "SessionStart": [
+      {"matcher": "startup|resume", "hooks": [{"type": "command", "timeout": 600,
+        "command": "[ \"$CLAUDE_CODE_REMOTE\" = true ] || exit 0; b=\"$HOME/ws/CORE/DEV/shared_resources\"; [ -d \"$b\" ] || git clone -q -b dev https://github.com/lockratio/shared_resources.git \"$b\"; bash \"$b/tools/cloud_setup.sh\""}]}
+    ]
+  }
+}
