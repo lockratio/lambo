@@ -1,8 +1,16 @@
 {
   "hooks": {
     "SessionStart": [
-      {"matcher": "startup|resume", "hooks": [{"type": "command", "timeout": 600,
-        "command": "[ \"$CLAUDE_CODE_REMOTE\" = true ] || exit 0; b=\"$HOME/ws/CORE/DEV/shared_resources\"; [ -d \"$b\" ] || git clone -q -b dev https://github.com/lockratio/shared_resources.git \"$b\" || { echo \"cloud setup: cannot clone the bank; install the Claude GitHub App on lockratio/shared_resources or attach that repo to the session\" >&2; exit 1; }; bash \"$b/tools/cloud_setup.sh\""}]}
+      {
+        "matcher": "startup|resume",
+        "hooks": [
+          {
+            "type": "command",
+            "timeout": 600,
+            "command": "[ \"$CLAUDE_CODE_REMOTE\" = true ] || exit 0; b=\"$(dirname \"$CLAUDE_PROJECT_DIR\")/shared_resources\"; if [ -f \"$b/tools/cloud_setup.sh\" ]; then bash \"$b/tools/cloud_setup.sh\"; else echo \"Cloud setup is not done: this app needs the bank. Before other work, attach lockratio/shared_resources to this session (add_repo, branch dev), then run: CLAUDE_PROJECT_DIR=$CLAUDE_PROJECT_DIR bash $b/tools/cloud_setup.sh && export SR_ENV=DEV PATH=$HOME/ws/CORE/.venv/bin:$PATH\"; fi"
+          }
+        ]
+      }
     ]
   }
 }
