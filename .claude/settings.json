@@ -7,7 +7,7 @@
           {
             "type": "command",
             "timeout": 600,
-            "command": "[ \"$CLAUDE_CODE_REMOTE\" = true ] || exit 0; b=\"$(dirname \"$CLAUDE_PROJECT_DIR\")/shared_resources\"; if [ -f \"$b/tools/cloud_setup.sh\" ]; then bash \"$b/tools/cloud_setup.sh\"; else echo \"Cloud setup is not done: this app needs the bank. Before other work, attach lockratio/shared_resources to this session (add_repo, branch dev), then run: CLAUDE_PROJECT_DIR=$CLAUDE_PROJECT_DIR bash $b/tools/cloud_setup.sh && export SR_ENV=DEV PATH=$HOME/ws/CORE/.venv/bin:$PATH\"; fi"
+            "command": "[ \"$CLAUDE_CODE_REMOTE\" = true ] || exit 0; b=\"$(dirname \"$CLAUDE_PROJECT_DIR\")/shared_resources\"; if [ -f \"$b/tools/cloud_setup.sh\" ]; then bash \"$b/tools/cloud_setup.sh\"; else echo \"Cloud setup is not done: this app needs the bank. Before other work, attach lockratio/shared_resources to this session (add_repo, branch dev), then run: CLAUDE_PROJECT_DIR=$CLAUDE_PROJECT_DIR bash $b/tools/cloud_setup.sh && export SR_ENV=DEV PATH=\\$HOME/ws/CORE/.venv/bin:\\$PATH\"; fi"
           }
         ]
       }
